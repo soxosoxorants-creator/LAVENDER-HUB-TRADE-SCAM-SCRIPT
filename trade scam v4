@@ -1,112 +1,91 @@
--- [[ LAVENDER HUB V4 - ULTRA SLIM ]]
-if game.CoreGui:FindFirstChild("LavenderHub") then
-    game.CoreGui.LavenderHub:Destroy()
-end
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "LavenderTradePro"
+ScreenGui.Parent = game:GetService("CoreGui")
 
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.Name = "LavenderHub"
-
--- THE MAIN FRAME (Height reduced to 220)
-local Main = Instance.new("Frame", ScreenGui)
-Main.BackgroundColor3 = Color3.fromRGB(180, 160, 255) -- True Lavender
-Main.Position = UDim2.new(0.5, -190, 0.5, -110)
-Main.Size = UDim2.new(0, 380, 0, 220) 
+local Main = Instance.new("Frame")
+Main.Parent = ScreenGui
+Main.BackgroundColor3 = Color3.fromRGB(20, 18, 28)
+Main.Size = UDim2.new(0, 180, 0, 185) -- Slightly taller for 4 toggles
+Main.Position = UDim2.new(0.5, -90, 0.4, 0)
 Main.Active = true
 Main.Draggable = true
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
--- HEADER TITLE (Slimmer Header)
-local Title = Instance.new("TextLabel", Main)
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundTransparency = 1
-Title.Text = "Lavender Hub V4"
+local Title = Instance.new("TextLabel")
+Title.Parent = Main
+Title.Size = UDim2.new(1, 0, 0, 28)
+Title.BackgroundColor3 = Color3.fromRGB(160, 130, 255)
+Title.Text = "LAVENDER TRADE V4"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 16
+Title.TextSize = 12
+Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 10)
 
--- TARGET DISPLAY BOX (Compact)
-local Target = Instance.new("TextLabel", Main)
-Target.Position = UDim2.new(0, 20, 0, 40)
-Target.Size = UDim2.new(1, -40, 0, 22)
-Target.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Target.BackgroundTransparency = 0.88
-Target.Text = "Target: Scanning Players..."
-Target.TextColor3 = Color3.fromRGB(255, 255, 255)
-Target.Font = Enum.Font.GothamMedium
-Target.TextSize = 11
-Instance.new("UICorner", Target).CornerRadius = UDim.new(0, 4)
-
--- TOGGLE CONTAINER (Zero Padding)
-local Container = Instance.new("Frame", Main)
-Container.Position = UDim2.new(0, 0, 0, 70)
-Container.Size = UDim2.new(1, 0, 1, -85)
-Container.BackgroundTransparency = 1
-local List = Instance.new("UIListLayout", Container)
-List.HorizontalAlignment = Enum.HorizontalAlignment.Center
-List.Padding = UDim.new(0, 5) -- Minimal spacing
-
--- AUTO-PLAYER FINDER
-task.spawn(function()
-    local players = game.Players:GetPlayers()
-    task.wait(0.8)
-    for _, p in pairs(players) do
-        if p ~= game.Players.LocalPlayer then
-            Target.Text = "Target Locked: " .. p.Name
-            break
-        end
-    end
-end)
-
--- CUSTOM SLIDING TOGGLE (Ultra Slim)
-local function CreateToggle(text)
-    local Frame = Instance.new("Frame", Container)
-    Frame.Size = UDim2.new(0, 350, 0, 38) -- Slimmer row height
-    Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Frame.BackgroundTransparency = 0.94
-    Instance.new("UICorner", Frame)
-
-    local Label = Instance.new("TextLabel", Frame)
-    Label.Size = UDim2.new(1, -70, 1, 0)
-    Label.Position = UDim2.new(0, 15, 0, 0)
+local function CreateToggle(name, pos, callback)
+    local Label = Instance.new("TextLabel")
+    Label.Parent = Main
+    Label.Text = "  " .. name
+    Label.Size = UDim2.new(0, 110, 0, 30)
+    Label.Position = UDim2.new(0, 5, 0, pos)
     Label.BackgroundTransparency = 1
-    Label.Text = text
-    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Label.Font = Enum.Font.GothamSemibold
-    Label.TextSize = 13
+    Label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 11
     Label.TextXAlignment = Enum.TextXAlignment.Left
 
-    local SwitchBG = Instance.new("TextButton", Frame)
-    SwitchBG.Position = UDim2.new(1, -50, 0.5, -9)
-    SwitchBG.Size = UDim2.new(0, 36, 0, 18)
-    SwitchBG.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    SwitchBG.Text = ""
-    Instance.new("UICorner", SwitchBG).CornerRadius = UDim.new(1, 0)
+    local BG = Instance.new("TextButton")
+    BG.Parent = Main
+    BG.Text = ""
+    BG.Size = UDim2.new(0, 30, 0, 16)
+    BG.Position = UDim2.new(0.78, 0, 0, pos + 7)
+    BG.BackgroundColor3 = Color3.fromRGB(45, 40, 60)
+    Instance.new("UICorner", BG).CornerRadius = UDim.new(1, 0)
 
-    local Circle = Instance.new("Frame", SwitchBG)
-    Circle.Position = UDim2.new(0, 2, 0.5, -7)
-    Circle.Size = UDim2.new(0, 14, 0, 14)
-    Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", Circle).CornerRadius = UDim.new(1, 0)
+    local Slider = Instance.new("Frame")
+    Slider.Parent = BG
+    Slider.Size = UDim2.new(0, 12, 0, 12)
+    Slider.Position = UDim2.new(0, 2, 0.5, -6)
+    Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Instance.new("UICorner", Slider).CornerRadius = UDim.new(1, 0)
 
-    local active = false
-    SwitchBG.MouseButton1Click:Connect(function()
-        active = not active
-        Circle:TweenPosition(active and UDim2.new(0, 20, 0.5, -7) or UDim2.new(0, 2, 0.5, -7), "Out", "Quad", 0.1)
-        SwitchBG.BackgroundColor3 = active and Color3.fromRGB(130, 255, 130) or Color3.fromRGB(60, 60, 60)
+    local enabled = false
+    BG.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        Slider:TweenPosition(enabled and UDim2.new(1, -14, 0.5, -6) or UDim2.new(0, 2, 0.5, -6), "Out", "Quad", 0.2, true)
+        BG.BackgroundColor3 = enabled and Color3.fromRGB(180, 150, 255) or Color3.fromRGB(45, 40, 60)
+        callback(enabled)
     end)
 end
 
--- THE 3 TOGGLES
-CreateToggle("Freeze Trade")
-CreateToggle("Auto Accept")
-CreateToggle("Auto Add Items")
+-- --- FEATURES ---
 
--- FAKE STATUS (Hidden in corner)
-local Stat = Instance.new("TextLabel", Main)
-Stat.Position = UDim2.new(0, 0, 1, -15)
-Stat.Size = UDim2.new(1, 0, 0, 12)
-Stat.BackgroundTransparency = 1
-Stat.Text = "v4.0.2 Stable"
-Stat.TextColor3 = Color3.fromRGB(255, 255, 255)
-Stat.TextTransparency = 0.8
-Stat.TextSize = 8
+-- 1. Freeze Trade
+CreateToggle("Freeze Trade", 35, function(state)
+    _G.Freeze = state
+end)
+
+-- 2. Auto Accept
+CreateToggle("Auto Accept", 70, function(state)
+    _G.AutoAccept = state
+end)
+
+-- 3. Add All Items (New Feature)
+CreateToggle("Add All Items", 105, function(state)
+    _G.AddAll = state
+    if state then
+        print("Adding all items to trade...")
+        -- In the video, this is where you show the slots filling up instantly
+    end
+end)
+
+-- 4. Safe Mode (Renamed)
+CreateToggle("Safe Mode", 140, function(state)
+    if state then
+        -- Visually masks the UI and changes player name to "LocalPlayer"
+        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetDescendants()) do
+            if v:IsA("TextLabel") and v.Text == game.Players.LocalPlayer.Name then
+                v.Text = "LocalPlayer"
+            end
+        end
+    end
+end)
