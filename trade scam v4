@@ -1,91 +1,95 @@
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LavenderTradePro"
+ScreenGui.Name = "LavenderTradeFull"
 ScreenGui.Parent = game:GetService("CoreGui")
 
+-- MAIN FRAME (Full Lavender)
 local Main = Instance.new("Frame")
 Main.Parent = ScreenGui
-Main.BackgroundColor3 = Color3.fromRGB(20, 18, 28)
-Main.Size = UDim2.new(0, 180, 0, 185) -- Slightly taller for 4 toggles
+Main.BackgroundColor3 = Color3.fromRGB(45, 35, 65) -- Deep Lavender Body
+Main.Size = UDim2.new(0, 180, 0, 185) 
 Main.Position = UDim2.new(0.5, -90, 0.4, 0)
+Main.BorderSizePixel = 0
 Main.Active = true
 Main.Draggable = true
 Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
 
+-- BRIGHT LAVENDER TITLE BAR
+local TitleBar = Instance.new("Frame")
+TitleBar.Parent = Main
+TitleBar.Size = UDim2.new(1, 0, 0, 30)
+TitleBar.BackgroundColor3 = Color3.fromRGB(180, 150, 255) -- Bright Lavender Title
+TitleBar.BorderSizePixel = 0
+
 local Title = Instance.new("TextLabel")
-Title.Parent = Main
-Title.Size = UDim2.new(1, 0, 0, 28)
-Title.BackgroundColor3 = Color3.fromRGB(160, 130, 255)
-Title.Text = "LAVENDER TRADE V4"
+Title.Parent = TitleBar
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "LAVENDER HUB V4"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 12
-Instance.new("UICorner", Title).CornerRadius = UDim.new(0, 10)
 
+local TCorner = Instance.new("UICorner", TitleBar)
+TCorner.CornerRadius = UDim.new(0, 10)
+
+-- TOGGLE CREATOR
 local function CreateToggle(name, pos, callback)
+    local Container = Instance.new("Frame")
+    Container.Parent = Main
+    Container.Size = UDim2.new(1, 0, 0, 35)
+    Container.Position = UDim2.new(0, 0, 0, pos)
+    Container.BackgroundTransparency = 1
+
     local Label = Instance.new("TextLabel")
-    Label.Parent = Main
+    Label.Parent = Container
     Label.Text = "  " .. name
-    Label.Size = UDim2.new(0, 110, 0, 30)
-    Label.Position = UDim2.new(0, 5, 0, pos)
+    Label.Size = UDim2.new(0, 120, 1, 0)
     Label.BackgroundTransparency = 1
-    Label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    Label.TextColor3 = Color3.fromRGB(230, 210, 255) -- Soft Lavender Text
     Label.Font = Enum.Font.Gotham
     Label.TextSize = 11
     Label.TextXAlignment = Enum.TextXAlignment.Left
 
     local BG = Instance.new("TextButton")
-    BG.Parent = Main
+    BG.Parent = Container
     BG.Text = ""
-    BG.Size = UDim2.new(0, 30, 0, 16)
-    BG.Position = UDim2.new(0.78, 0, 0, pos + 7)
-    BG.BackgroundColor3 = Color3.fromRGB(45, 40, 60)
+    BG.Size = UDim2.new(0, 32, 0, 18)
+    BG.Position = UDim2.new(0.78, 0, 0.25, 0)
+    BG.BackgroundColor3 = Color3.fromRGB(60, 50, 85) -- Darker Purple Track
     Instance.new("UICorner", BG).CornerRadius = UDim.new(1, 0)
 
     local Slider = Instance.new("Frame")
     Slider.Parent = BG
-    Slider.Size = UDim2.new(0, 12, 0, 12)
-    Slider.Position = UDim2.new(0, 2, 0.5, -6)
+    Slider.Size = UDim2.new(0, 14, 0, 14)
+    Slider.Position = UDim2.new(0, 2, 0.5, -7)
     Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Instance.new("UICorner", Slider).CornerRadius = UDim.new(1, 0)
 
     local enabled = false
     BG.MouseButton1Click:Connect(function()
         enabled = not enabled
-        Slider:TweenPosition(enabled and UDim2.new(1, -14, 0.5, -6) or UDim2.new(0, 2, 0.5, -6), "Out", "Quad", 0.2, true)
-        BG.BackgroundColor3 = enabled and Color3.fromRGB(180, 150, 255) or Color3.fromRGB(45, 40, 60)
+        -- Smooth Slide Animation
+        Slider:TweenPosition(enabled and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7), "Out", "Quad", 0.2, true)
+        -- Color change to Bright Lavender
+        BG.BackgroundColor3 = enabled and Color3.fromRGB(180, 150, 255) or Color3.fromRGB(60, 50, 85)
         callback(enabled)
     end)
 end
 
--- --- FEATURES ---
+-- --- THE 4 TOGGLES ---
 
--- 1. Freeze Trade
 CreateToggle("Freeze Trade", 35, function(state)
     _G.Freeze = state
 end)
 
--- 2. Auto Accept
 CreateToggle("Auto Accept", 70, function(state)
-    _G.AutoAccept = state
+    _G.AutoAcc = state
 end)
 
--- 3. Add All Items (New Feature)
 CreateToggle("Add All Items", 105, function(state)
     _G.AddAll = state
-    if state then
-        print("Adding all items to trade...")
-        -- In the video, this is where you show the slots filling up instantly
-    end
 end)
 
--- 4. Safe Mode (Renamed)
 CreateToggle("Safe Mode", 140, function(state)
-    if state then
-        -- Visually masks the UI and changes player name to "LocalPlayer"
-        for _, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetDescendants()) do
-            if v:IsA("TextLabel") and v.Text == game.Players.LocalPlayer.Name then
-                v.Text = "LocalPlayer"
-            end
-        end
-    end
+    _G.SafeMode = state
 end)
